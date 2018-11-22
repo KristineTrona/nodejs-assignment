@@ -5,12 +5,21 @@
   "main": "index.js",
   "scripts": {
     "start-nats": "sh ./start-nats",
-    "start-broadcast": "node vehicle-data-generator/index.js"
+    "start-broadcast": "node vehicle-data-generator/index.js",
+    "start-server": "nodemon data-storage/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "csv-parse": "^3.2.0",
-    "nats": "^1.0.1"
+    "kcors": "^2.2.2",
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^7.4.0",
+    "nats": "^1.0.1",
+    "nodemon": "^1.18.6",
+    "routing-controllers": "^0.7.7",
+    "socket.io": "^2.1.1"
   }
 }
