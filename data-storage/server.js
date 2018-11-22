@@ -1,30 +1,48 @@
-// import * as Koa from 'koa'
-const  {createKoaServer} = require ("routing-controllers")
+const fs = require ( "fs")
 const {Server} = require ('http')
+const express = require('express')
 const  IO = require('socket.io')
-// const koa = requires('koa')
+// const Koa = require('koa')
+// const  {useKoaServer} = require ("routing-controllers")
+
+const NATS = require("nats")
+const nats = NATS.connect({url: "nats://localhost:4222", json: true})
+
+const port = process.env.PORT || 4000
+// const app = new Koa()
+const app = express()
+const server = new Server()
+
+// app.get('/vehicles', (req, res) => {  
+//   House.findAll().then(houses => {
+//     res.json({ houses: houses }) 
+//   })
+//   .catch(err => {
+//     res.status(500).json({
+//       message: 'Something went wrong',
+//       error: err
+//     })
+//   })
+// })
 
 // const server = new Server(app.callback())
-const port = process.env.PORT || 4000
 
-const app = createKoaServer({
-  cors: true,
-  controllers: [
-   ]
-  })
+// useKoaServer(app, {
+//   cors: true,
+//   controllers: []
+// })
 
-  const io = IO(app)
+// const io = IO(server)
 
-  io.on('connect', socket => {
-    // const name = socket.request.user.firstName
-    console.log(`User just connected`)
+//   io.on('connect', () => {
+
+//     console.log(`User just connected`)
   
-    socket.on('disconnect', () => {
-      console.log(`User just disconnected`)
-    })
-  })
+//     socket.on('disconnect', () => {
+//       console.log(`User just disconnected`)
+//     })
+//   })
 
-  app.listen(port, () => console.log(`Listening on port ${port}`))
-  // .catch(err => console.error(err))
+nats.subscribe('vehicle.test-bus-1', (obj) => console.log(obj))
 
-  module.exports = {io}
+server.listen(port, () => console.log(`Listening on port ${port}`))
