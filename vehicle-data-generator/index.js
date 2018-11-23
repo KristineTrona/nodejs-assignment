@@ -64,8 +64,6 @@ const readOutLoud = (vehicleName) => {
 
 					nats.publish(`vehicle.${vehicleName}`, obj, cb)
 
-					// nats.subscribe('vehicle.test-bus-1', console.log(obj)) <-- REMOVE THIS LATER
-
 				}, Math.ceil(Math.random() * 150))
 			}
 		})))

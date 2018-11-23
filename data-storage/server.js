@@ -2,6 +2,10 @@ const fs = require ( "fs")
 const {Server} = require ('http')
 const express = require('express')
 const  IO = require('socket.io')
+
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb://localhost:27017/mydb";
+
 // const Koa = require('koa')
 // const  {useKoaServer} = require ("routing-controllers")
 
@@ -43,6 +47,16 @@ const server = new Server()
 //     })
 //   })
 
-nats.subscribe('vehicle.test-bus-1', (obj) => console.log(obj))
+MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+  if (err) throw err;
+  const dbo = db.db("vehicles");
+
+  nats.subscribe('vehicle.test-bus-1', (message) => 
+  
+  dbo.collection("testbus1").insertOne(message, function(err, res) {
+    if (err) throw err;
+    console.log("1 document inserted");
+  }))
+});
 
 server.listen(port, () => console.log(`Listening on port ${port}`))
