@@ -20,8 +20,11 @@
     "koa-router": "^7.4.0",
     "mongodb": "^3.1.10",
     "nats": "^1.0.1",
-    "nodemon": "^1.18.6",
+    "pstree.remy": "1.1.0",
     "routing-controllers": "^0.7.7",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
   }
 }
