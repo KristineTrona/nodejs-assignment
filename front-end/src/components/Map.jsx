@@ -1,8 +1,9 @@
 import React from 'react'
 import GoogleMapReact from 'google-map-react';
+// import {connect} from 'react-redux'
 import request from 'superagent'
-
-const Bus = () => <img width="25" src='https://image.flaticon.com/icons/png/512/2/2322.png' alt="bus icon"/>;
+import {Bus} from './Bus'
+    
 const baseUrl = 'http://localhost:4000'
 
 
@@ -10,22 +11,38 @@ export default class BusMap extends React.Component {
 
   state={
     lat: null,
-    lng: null
+    lng: null,
+    battery: null
   }
 
-  componentDidMount(){
+  findBus = () => {
 
     request(`${baseUrl}/`)
     .then(response => { 
-      const gpsLat = response.body[0].gps.split("|")[0]
-      const gpsLng = response.body[0].gps.split("|")[1]
+  
+      const gpsLat = parseFloat(response.body[0].gps.split("|")[0])
+      const gpsLng = parseFloat(response.body[0].gps.split("|")[1])
+      const currentBattery = response.body[0].soc
 
       this.setState({
         lat: gpsLat,
-        lng: gpsLng})
-    })
-    .catch(console.error)
+        lng: gpsLng,
+        battery: currentBattery})
+    }).catch(console.error)
+
+    console.log(this.state)
   }
+
+  componentDidMount(){
+    this.findBus()
+  }
+
+
+  // componentDidUpdate(prevState) {
+  //   if (this.state !== prevState) {
+  //     this.findBus();
+  //   }
+  // }
 
   render() {
     return (
@@ -33,14 +50,14 @@ export default class BusMap extends React.Component {
         <h1 className="map-title">Henk's bus route</h1>
         <div className="bus-map">
           <GoogleMapReact
-            center={{lat: 52, lng: 5}}
-            defaultZoom={10}
+            center={this.state.lat === null ? {lat: 52, lng:5} : {lat: this.state.lat, lng: this.state.lng}}
+            zoom={this.state.lat === null || 52 ? 9 : 14}
             bootstrapURLKeys={{
               key: 'AIzaSyCd1Uh6uwM79vgsUHLc3xz2yq-vGwqqxmU'
             }}>
             {
               this.state.lat !== null && this.state.lng !== null &&
-              <Bus lat={this.state.lat} lng={this.state.lng} />
+              <Bus lat={this.state.lat} lng={this.state.lng} battery={this.state.battery} />
             }
           </GoogleMapReact>
         </div>
@@ -49,3 +66,15 @@ export default class BusMap extends React.Component {
  
   }
 }
+
+// const mapStateToProps = function (state) {
+// 	return {
+//     testbus1: state.testbus1
+// 	}
+// }
+
+// const mapDispatchToProps = {
+
+// 	}
+
+// export default connect(mapStateToProps, mapDispatchToProps)(BusMap)

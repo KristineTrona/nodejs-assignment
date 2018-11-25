@@ -10,3 +10,25 @@
 .map-title{
   text-align: center;
 }
+
+.battery{
+  width: 3vh;
+  height: 7px;
+  border-radius: 20%;
+  margin-bottom: 2px;
+  margin-left: 3px;
+  background-color: white;
+  border: 1px black solid;
+}
+
+.battery-status{
+  position: relative;
+  top:0;
+  left: 0;
+  height: 100%;
+}
+
+.bus-image{
+  width: 4vh;
+  background-color: white;
+}
