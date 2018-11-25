@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const router = express.Router();
 const request = require('superagent')
 
-const socket = require('socket.io')
+const IO = require('socket.io')
 
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017";
@@ -33,31 +33,30 @@ nats.subscribe('vehicle.test-bus-1', (message) =>
   .catch(console.error)
 )
 
+const io = IO(server)
+
+io.on('connection', (socket) => {
+
+  console.log(`Socket connected`)
+
+  socket.on('disconnect', () => {
+    console.log(`Socket disconnected`)
+  })
+})
+
 MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   if(err) return console.error(err);
 
   let dbo = db.db("vehicles");
 
-  const io = socket(server)
-
-  io.on('connection', () => {
-
-    console.log(`Socket connected`)
-  
-    socket.on('disconnect', () => {
-      console.log(`Socket disconnected`)
-    })
-  })
-
-  // socket.emit('output', res)
-
  router.get(`/`, (req, res) => {
-    return dbo.collection('testbus1').find().sort({time: -1}).limit(1).toArray( (err, docs) => {
+    return dbo.collection('testbus1').find().sort({time: -1}).limit(1).toArray( (err, doc) => {
       if(err) return next(err);
+      if(doc){
 
-      if(docs){
-        res.send(docs)
-        console.log(docs.length)
+        io.emit('action', doc)
+
+        res.send(doc)
       } else {
         res.send({message: 'Vehicle data does not exist'})
       }
@@ -75,5 +74,4 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
 
 app.use(`/`, router)
 
-
-
+module.exports = io
