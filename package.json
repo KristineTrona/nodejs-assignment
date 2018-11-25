@@ -22,7 +22,8 @@
     "nats": "^1.0.1",
     "pstree.remy": "1.1.0",
     "routing-controllers": "^0.7.7",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "superagent": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"
