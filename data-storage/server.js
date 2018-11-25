@@ -5,7 +5,6 @@ const request = require('superagent')
 
 const socket = require('socket.io')
 
-const mongodb = require("mongodb");
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017";
 
@@ -53,7 +52,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   // socket.emit('output', res)
 
  router.get(`/`, (req, res) => {
-    return dbo.collection('testbus1').find().limit(1).toArray( (err, docs) => {
+    return dbo.collection('testbus1').find().sort({time: -1}).limit(1).toArray( (err, docs) => {
       if(err) return next(err);
 
       if(docs){

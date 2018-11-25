@@ -1,0 +1,12 @@
+
+.bus-map{
+  width: 80%;
+  height: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  border: 1px black solid;
+}
+.map-title{
+  text-align: center;
+}

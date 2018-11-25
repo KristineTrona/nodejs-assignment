@@ -29,18 +29,21 @@ export default class BusMap extends React.Component {
 
   render() {
     return (
-      <div style={{width: '100%', height: '400px'}}>
-      <GoogleMapReact
-        center={{lat: 52, lng: 5}}
-        defaultZoom={10}
-        bootstrapURLKeys={{
-          key: 'AIzaSyCd1Uh6uwM79vgsUHLc3xz2yq-vGwqqxmU'
-        }}>
-        {
-          this.state.lat !== null && this.state.lng !== null &&
-          <Bus lat={this.state.lat} lng={this.state.lng} />
-        }
-      </GoogleMapReact>
+      <div className="map-container">
+        <h1 className="map-title">Henk's bus route</h1>
+        <div className="bus-map">
+          <GoogleMapReact
+            center={{lat: 52, lng: 5}}
+            defaultZoom={10}
+            bootstrapURLKeys={{
+              key: 'AIzaSyCd1Uh6uwM79vgsUHLc3xz2yq-vGwqqxmU'
+            }}>
+            {
+              this.state.lat !== null && this.state.lng !== null &&
+              <Bus lat={this.state.lat} lng={this.state.lng} />
+            }
+          </GoogleMapReact>
+        </div>
     </div>
     );
  
