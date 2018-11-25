@@ -18,10 +18,15 @@ const baseUrl = 'http://localhost:4000'
 const app = express()
 app.use(bodyParser.json());
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 let server = app.listen(port, () => console.log(`Listening on port ${port}`))
 
 nats.subscribe('vehicle.test-bus-1', (message) => 
-
   request
   .post(`${baseUrl}/`)
   .type('json')
@@ -34,21 +39,21 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
 
   let dbo = db.db("vehicles");
 
-  // const io = socket(server)
+  const io = socket(server)
 
-  // io.on('connection', () => {
+  io.on('connection', () => {
 
-  //   console.log(`Socket connected`)
+    console.log(`Socket connected`)
   
-  //   socket.on('disconnect', () => {
-  //     console.log(`Socket disconnected`)
-  //   })
-  // })
+    socket.on('disconnect', () => {
+      console.log(`Socket disconnected`)
+    })
+  })
 
   // socket.emit('output', res)
 
  router.get(`/`, (req, res) => {
-    return dbo.collection('testbus1').find().toArray( (err, docs) => {
+    return dbo.collection('testbus1').find().limit(1).toArray( (err, docs) => {
       if(err) return next(err);
 
       if(docs){

@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
-import Map from './components/Map'
+import BusMap from './components/Map'
 
-class App extends Component {
+export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <Map/>
+        <BusMap/>
       </div>
     );
   }
 }
 
-export default App;
