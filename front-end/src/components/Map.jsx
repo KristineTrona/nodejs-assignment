@@ -2,7 +2,7 @@ import React from 'react'
 import GoogleMapReact from 'google-map-react';
 import {connect} from 'react-redux'
 import {Bus} from './Bus'
-import {key} from '../constants'
+import {key} from '../keys'
 import {findBus} from '../actions/busData'
 import io from 'socket.io-client'
 
@@ -22,7 +22,8 @@ class BusMap extends React.Component {
   }
 
   componentWillUnmount() {
-    this.socket.close();
+    let socket = io.connect('http://localhost:4000');
+    socket.close();
   }
 
   render() {
@@ -36,11 +37,9 @@ class BusMap extends React.Component {
 
           {(testbus1.length !== 0  && testbus1[0].gps) &&
             <GoogleMapReact
-              // center={this.props.testbus1 === null ? {lat: 52, lng:5} : {lat: this.state.lat, lng: this.state.lng}}
-              // zoom={this.state.lat === null || this.state.lat === 52 ? 9 : 14}
               center={{lat: parseFloat(testbus1[0].gps.split("|")[0]), 
                   lng: parseFloat(testbus1[0].gps.split("|")[1])}}
-              zoom={14}
+              zoom={15}
               bootstrapURLKeys={{
                 key: key}}>
               <Bus 

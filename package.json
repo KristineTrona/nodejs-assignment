@@ -6,12 +6,12 @@
   "scripts": {
     "start-nats": "sh ./start-nats",
     "start-broadcast": "node vehicle-data-generator/index.js",
-    "start-server": "nodemon data-storage/server.js"
+    "start-server": "nodemon data-storage/server.js",
+    "test": "mocha tests/api.spec.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "csv-parse": "^3.2.0",
     "express": "^4.16.4",
     "mongodb": "^3.1.10",
@@ -20,6 +20,8 @@
     "superagent": "^4.0.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.18.6"
   }
 }

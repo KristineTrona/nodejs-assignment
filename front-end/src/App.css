@@ -12,7 +12,7 @@
 }
 
 .battery{
-  width: 3vh;
+  width: 22px;
   height: 7px;
   border-radius: 20%;
   margin-bottom: 2px;
@@ -29,6 +29,6 @@
 }
 
 .bus-image{
-  width: 4vh;
+  width: 30px;
   background-color: white;
 }
