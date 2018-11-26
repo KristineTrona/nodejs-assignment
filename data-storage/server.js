@@ -25,14 +25,6 @@ app.use(function(req, res, next) {
 
 let server = app.listen(port, () => console.log(`Listening on port ${port}`))
 
-nats.subscribe('vehicle.test-bus-1', (message) => 
-  request
-  .post(`${baseUrl}/`)
-  .type('json')
-  .send(message)
-  .catch(console.error)
-)
-
 const io = IO(server)
 
 io.on('connection', (socket) => {
@@ -44,6 +36,17 @@ io.on('connection', (socket) => {
   })
 })
 
+nats.subscribe('vehicle.test-bus-1', (message) => 
+  request
+  .post(`${baseUrl}/`)
+  .type('json')
+  .send(message)
+  .then(io.emit('action', message))
+  .catch(console.error)
+
+)
+
+
 MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   if(err) return console.error(err);
 
@@ -53,9 +56,6 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     return dbo.collection('testbus1').find().sort({time: -1}).limit(1).toArray( (err, doc) => {
       if(err) return next(err);
       if(doc){
-
-        io.emit('action', doc)
-
         res.send(doc)
       } else {
         res.send({message: 'Vehicle data does not exist'})
