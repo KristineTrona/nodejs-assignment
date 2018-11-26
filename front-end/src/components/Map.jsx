@@ -1,68 +1,77 @@
 import React from 'react'
 import GoogleMapReact from 'google-map-react';
-import request from 'superagent'
+import {connect} from 'react-redux'
 import {Bus} from './Bus'
 import {key} from '../constants'
-    
-const baseUrl = 'http://localhost:4000'
+import {findBus} from '../actions/busData'
+import io from 'socket.io-client'
 
 
-export default class BusMap extends React.Component {
-
-  state={
-    lat: null,
-    lng: null,
-    battery: null
-  }
-
-  findBus = () => {
-
-    request(`${baseUrl}/`)
-    .then(response => { 
-  
-      const gpsLat = parseFloat(response.body[0].gps.split("|")[0])
-      const gpsLng = parseFloat(response.body[0].gps.split("|")[1])
-      const currentBattery = response.body[0].soc
-
-      this.setState({
-        lat: gpsLat,
-        lng: gpsLng,
-        battery: currentBattery})
-    }).catch(console.error)
-
-    console.log(this.state)
-  }
+class BusMap extends React.Component {
 
   componentDidMount(){
-    this.findBus()
+    let socket = io.connect('http://localhost:4000');
+
+    if(socket !== undefined){
+      console.log('Socket connected')
+
+      socket.on('output', (data) => {
+        this.props.findBus()
+      })
+    }
   }
 
-
-  // componentDidUpdate(prevState) {
-  //   if (this.state !== prevState) {
-  //     this.findBus();
-  //   }
-  // }
+  componentWillUnmount() {
+    this.socket.close();
+  }
 
   render() {
+
+    const {testbus1} = this.props 
+    
     return (
       <div className="map-container">
         <h1 className="map-title">Henk's bus route</h1>
         <div className="bus-map">
-          <GoogleMapReact
-            center={this.state.lat === null ? {lat: 52, lng:5} : {lat: this.state.lat, lng: this.state.lng}}
-            zoom={this.state.lat === null || this.state.lat === 52 ? 9 : 14}
-            bootstrapURLKeys={{
-              key: key
-            }}>
-            {
-              this.state.lat !== null && this.state.lng !== null &&
-              <Bus lat={this.state.lat} lng={this.state.lng} battery={this.state.battery} />
-            }
-          </GoogleMapReact>
+
+          {(testbus1.length !== 0  && testbus1[0].gps) &&
+            <GoogleMapReact
+              // center={this.props.testbus1 === null ? {lat: 52, lng:5} : {lat: this.state.lat, lng: this.state.lng}}
+              // zoom={this.state.lat === null || this.state.lat === 52 ? 9 : 14}
+              center={{lat: parseFloat(testbus1[0].gps.split("|")[0]), 
+                  lng: parseFloat(testbus1[0].gps.split("|")[1])}}
+              zoom={14}
+              bootstrapURLKeys={{
+                key: key}}>
+              <Bus 
+                lat={parseFloat(testbus1[0].gps.split("|")[0])} 
+                lng={parseFloat(testbus1[0].gps.split("|")[1])}
+                battery={testbus1[0].soc} />          
+            </GoogleMapReact>
+          }
+          { testbus1.length === 0 && 
+            <GoogleMapReact
+              center={{lat: 52, lng: 5}}
+              zoom={9}
+              bootstrapURLKeys={{
+                key: key}}>        
+            </GoogleMapReact>
+          }
         </div>
     </div>
     );
  
   }
 }
+
+const mapStateToProps = function (state) {
+	return {
+    testbus1: state.testbus1
+	}
+}
+
+const mapDispatchToProps = {
+  findBus
+	}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BusMap)
