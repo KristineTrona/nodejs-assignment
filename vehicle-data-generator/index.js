@@ -33,6 +33,25 @@ const readOutLoud = (vehicleName) => {
 	// And when to use one or the others
 	// =========================
 
+	// =========================
+	// Answer Point 1:
+	//
+	// fs.createReadStream - reads the file in chunks, does not load the entire file into memory. 
+	//
+	// fs.readFileSync("./meta/route.csv", {encoding: utf8}) - will read the entire file and load it in the memory,
+	// it is faster than fs.readFileAsync, but slower than fs.createReadStream
+	//
+	// The fs.readFileAsync will read the file asyncrinously - reading will occur in the background while other tasks are being performed. 
+	// The async function can also take a callback function as an argument, which means we can also modify the data that is going to be returned.
+	// fs.readFileAsync("./meta/route.csv", (err, data) => {
+	// 	if (err){
+	// 		console.log(err.message)
+	// 	} else{
+	// 		console.log(data.toString)
+	// 	}
+	// }) 
+	// =========================
+
 	// Now comes the interesting part,
 	// Handling this filestream requires us to create pipeline that will transform the raw string
 	// to object and sent out to nats
@@ -62,6 +81,7 @@ const readOutLoud = (vehicleName) => {
 					// The first parameter on this function is topics in which data will be broadcasted
 					// it also includes the vehicle name to seggregate data between different vehicle
 
+					
 					nats.publish(`vehicle.${vehicleName}`, obj, cb)
 
 				}, Math.ceil(Math.random() * 150))
@@ -71,6 +91,12 @@ const readOutLoud = (vehicleName) => {
 	// Question Point 2:
 	// What would happend if it failed to publish to nats or connection to nats is slow?
 	// Maybe you can try to emulate those slow connection
+	// =========================
+
+	// =========================
+	// Answer Point 2:
+	// We would not get real time data in our server.
+	// We can emulate the slow connection by changing the 150 ms to for example 5000 ms in the Math.random function.
 	// =========================
 }
 
