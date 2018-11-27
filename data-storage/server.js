@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
     let database = db.db(process.env.MONGODB_URI )
 
     router.get(`/`, (req, res) => {
-      return database.collection('testbus1').find().sort({time: -1}).limit(1).toArray( (err, doc) => {
+      return database.collection('testbus1').find({time: {$ne:""}}).sort({time: -1}).limit(1).toArray( (err, doc) => {
         if(err) return next(err)
         if(doc){
           res.send(doc)
